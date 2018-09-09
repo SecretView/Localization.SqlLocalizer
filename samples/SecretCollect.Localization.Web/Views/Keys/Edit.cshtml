@@ -1,0 +1,51 @@
+﻿@model SecretCollect.Localization.Web.Models.KeyVM
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = Model.Main;
+}
+
+@if (Model.SaveResult != SaveResult.None)
+{
+    switch (Model.SaveResult)
+    {
+        case SaveResult.Success:
+            <div class="alert alert-success" role="alert"> <strong>@localizer["SUCCESS_HEADER"]</strong> @localizer["SUCCESS_MSG"]</div>
+            break;
+        case SaveResult.Duplicate:
+            <div class="alert alert-warning" role="alert"> <strong>@localizer["DUPLICATE_ERROR_HEADER"]</strong> @localizer["DUPLICATE_ERROR_MSG"]</div>
+            break;
+        case SaveResult.UnknownFailure:
+            <div class="alert alert-danger" role="alert"> <strong>@localizer["UNKNOWN_ERROR_HEADER"]</strong> @localizer["UNKNOWN_ERROR_MSG"]</div>
+            break;
+    }
+
+}
+
+<h2>@Model.Main</h2>
+
+<h4><a asp-action="SubKey" asp-route-baseKey="@Model.Base">@Model.Base</a></h4>
+<hr />
+<form asp-action="Edit">
+    <input asp-for="Id" type="hidden" />
+    <div class="row">
+        <div class="col-md-5">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Comment" class="control-label"></label>
+                <textarea asp-for="Comment" class="form-control"></textarea>
+                <span asp-validation-for="Comment" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-7">
+            @Html.EditorFor(m => m.Translations)
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5">
+            <div class="form-group">
+                <input type="submit" value="@localizer["SAVE"]" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+

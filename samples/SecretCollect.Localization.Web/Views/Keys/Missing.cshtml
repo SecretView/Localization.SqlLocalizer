@@ -1,0 +1,72 @@
+﻿@model IEnumerable<SecretCollect.Localization.Web.Models.MissingLocalizationsVM>
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = localizer["MISSING_TRANSLATIONS"];
+}
+
+<h2>@localizer["MISSING_TRANSLATIONS"]</h2>
+
+<div>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            var item = Model.ElementAt(i);
+            if (i == 0)
+            {
+                <li role="presentation" class="active">
+                    <a href="#@item.CultureName" aria-controls="culture-@item.CultureName" role="tab" data-toggle="tab">@item.CultureName (@item.LocalizationKeys.Count())</a>
+                </li>
+            }
+            else
+            {
+                <li role="presentation">
+                    <a href="#@item.CultureName" aria-controls="culture-@item.CultureName" role="tab" data-toggle="tab">@item.CultureName (@item.LocalizationKeys.Count())</a>
+                </li>
+            }
+        }
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            var item = Model.ElementAt(i);
+            <div role="tabpanel" class="tab-pane @(i == 0 ? "active" : "")" id="culture-@item.CultureName">
+                @if (item.LocalizationKeys.Any())
+                {
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>@localizer["BASEKEY"]</th>
+                                <th>@localizer["KEY"]</th>
+                                <th>@localizer["COMMENT"]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var locGroup in item.LocalizationKeys.OrderBy(l => l.Base))
+                            {
+                                <tr>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-baseKey="@locGroup.Base" asp-route-mainKey="@locGroup.Key">@locGroup.Base</a>
+
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-baseKey="@locGroup.Base" asp-route-mainKey="@locGroup.Key">@locGroup.Key</a>
+                                    </td>
+                                    <td style="font-style: italic">
+                                        @locGroup.Comment
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>@localizer["NO_MISSING_TRANSLATIONS"]</p>
+                }
+            </div>
+        }
+    </div>
+</div>

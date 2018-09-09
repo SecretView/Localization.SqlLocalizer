@@ -1,0 +1,30 @@
+﻿@model BaseKeyVM
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = Model.Base;
+}
+
+<h2>@Model.Base</h2>
+<p>
+    <a asp-action="Add" asp-route-baseKey="@Model.Base">@localizer["ADD_KEY"]</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@localizer["KEYS"]</th>
+            <th>@localizer["COMMENT"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Keys)
+        {
+            <tr>
+                <td>
+                    <a asp-controller="Keys" asp-action="Edit" asp-route-baseKey="@Model.Base" asp-route-mainKey="@item.Key">@item.Key</a>
+                </td>
+                <td><span style="font-style: italic;">@item.Comment</span></td>
+            </tr>
+        }
+    </tbody>
+</table>

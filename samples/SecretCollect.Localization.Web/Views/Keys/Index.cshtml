@@ -1,0 +1,32 @@
+﻿@model IEnumerable<string>
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = localizer["BASE_KEYS"];
+}
+
+<h2>@localizer["BASE_KEYS"]</h2>
+
+<p>
+    <a asp-action="Add">@localizer["ADD_NEW_KEY"]</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @localizer["BASE_KEYS"]
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="SubKey" asp-route-baseKey="@item">@item</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,9 @@
+﻿@model SecretCollect.Localization.Web.Models.LocVM
+
+<input asp-for="CultureId" type="hidden" />
+<div class="form-group">
+    <label asp-for="Translation" class="control-label">@Model.CultureName</label>
+    <input asp-for="Translation" class="form-control" />
+    <span asp-validation-for="Translation" class="text-danger"></span>
+</div>
+

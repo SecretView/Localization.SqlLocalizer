@@ -1,0 +1,68 @@
+﻿@model SecretCollect.Localization.Web.Models.SearchVM
+@inject IViewLocalizer localizer
+
+@if (string.IsNullOrWhiteSpace(Model?.Query))
+{
+    ViewData["Title"] = localizer["Search"].Value;
+}
+else
+{
+    ViewData["Title"] = localizer["Search"].Value + ": " + Model.Query;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Search">
+    <div class="row">
+        <div class="col-md-5">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Query" class="control-label"></label>
+                <textarea asp-for="Query" class="form-control"></textarea>
+                <span asp-validation-for="Query" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5">
+            <div class="form-group">
+                <input type="submit" value="@localizer["SEARCH_COMMAND"]" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@if (Model?.Items.Any() == true)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @localizer["KEY"]
+                </th>
+                <th>
+                    @localizer["CULTURE"]
+                </th>
+                <th>
+                    @localizer["TEXT"]
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="Keys" asp-action="Edit" asp-route-baseKey="@item.Base" asp-route-mainKey="@item.Key">@(item.Base + "." + item.Key)</a>
+                    </td>
+                    <td>
+                        @item.Culture
+                    </td>
+                    <td>
+                        @Html.Raw(item.Text.Replace(Model.Query, $"<span style=\"font-weight: bold\">{Model.Query}</span>"))
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
