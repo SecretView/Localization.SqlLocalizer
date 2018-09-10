@@ -72,12 +72,6 @@ namespace SecretCollect.Localization.Web
                     template: "{controller=Home}/{action=Index}/{id?}"
                 );
             });
-
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetService<SqlLocalizer.Data.LocalizationContext>();
-                context.Database.Migrate();
-            }
         }
     }
 }

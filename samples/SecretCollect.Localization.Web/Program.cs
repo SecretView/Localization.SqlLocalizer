@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using SecretCollect.Localization.SqlLocalizer.Data;
 
 namespace SecretCollect.Localization.Web
 {
@@ -7,7 +8,10 @@ namespace SecretCollect.Localization.Web
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            CreateWebHostBuilder(args)
+                .Build()
+                .MigrateDatabase<LocalizationContext>()
+                .Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
