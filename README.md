@@ -1,6 +1,9 @@
 # Localization.SqlLocalizer
 Repository to enable localizations using EF &amp; SQL in an ASP.NET Core application
 
+**NuGet:** [![NuGet](https://img.shields.io/nuget/dt/SecretCollect.Localization.SqlLocalizer.svg)](https://www.nuget.org/packages/SecretCollect.Localization.SqlLocalizer/)
+
+
 ## How to use
 In your Startup.cs, add the services by calling:
 
