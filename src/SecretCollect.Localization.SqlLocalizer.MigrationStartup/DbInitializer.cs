@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using SecretCollect.Localization.SqlLocalizer.Data;
 
-namespace SecretCollect.Localization.SqlLocalizer.Internal
+namespace SecretCollect.Localization.SqlLocalizer.MigrationStartup
 {
     internal class DbInitializer : IDesignTimeDbContextFactory<LocalizationContext>
     {

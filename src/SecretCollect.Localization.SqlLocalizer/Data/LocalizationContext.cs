@@ -9,11 +9,12 @@ using System.Threading.Tasks;
 
 namespace SecretCollect.Localization.SqlLocalizer.Data
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Database context for the localizations
+    /// </summary>
     /// <remarks>
     /// To add a migration use:
-    /// Add-Migration -Project SecretCollect.Localization.SqlLocalizer -StartupProject SecretCollect.Localization.SqlLocalizer -Context LocalizationContext
-    /// Cross build net461 was added to support the migration command
+    /// Add-Migration -Project SecretCollect.Localization.SqlLocalizer -StartupProject SecretCollect.Localization.SqlLocalizer.MigrationStartup -Context LocalizationContext
     /// </remarks>
     public class LocalizationContext : DbContext
     {

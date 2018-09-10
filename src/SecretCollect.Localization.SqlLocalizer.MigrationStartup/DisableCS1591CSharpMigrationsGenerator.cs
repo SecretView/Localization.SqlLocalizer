@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using System;
 using System.Collections.Generic;
 
-namespace SecretCollect.Localization.SqlLocalizer.Internal
+namespace SecretCollect.Localization.SqlLocalizer.MigrationStartup
 {
     internal class DisableCS1591CSharpMigrationsGenerator : CSharpMigrationsGenerator
     {
