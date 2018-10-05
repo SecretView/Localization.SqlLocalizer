@@ -1,4 +1,4 @@
-﻿// Copyright (c) SecretCollect B.V. All rights reserved.
+// Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using Microsoft.Extensions.Logging;
@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace SecretCollect.Localization.SqlLocalizer.Internal
 {
-    static class SqlStringLocalizerLoggerExtensions
+    internal static class SqlStringLocalizerLoggerExtensions
     {
         private static readonly Action<ILogger, string, string, CultureInfo, Exception> _searchedLocation;
 
@@ -20,8 +20,6 @@ namespace SecretCollect.Localization.SqlLocalizer.Internal
         }
 
         public static void SearchedLocation(this ILogger logger, string key, string searchedLocation, CultureInfo culture)
-        {
-            _searchedLocation(logger, key, searchedLocation, culture, null);
-        }
+            => _searchedLocation(logger, key, searchedLocation, culture, null);
     }
 }
