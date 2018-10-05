@@ -1,4 +1,4 @@
-﻿// Copyright (c) SecretCollect B.V. All rights reserved.
+// Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using Microsoft.AspNetCore.Builder;
@@ -35,6 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<IStringLocalizerFactory, SqlStringLocalizerFactory>();
             services.TryAddTransient(typeof(IStringLocalizer<>), typeof(SqlStringLocalizer<>));
+            services.TryAddTransient<Preloader>();
             return services;
         }
     }

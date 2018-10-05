@@ -7,6 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SecretCollect.Localization.SqlLocalizer.Data;
+using SecretCollect.Localization.SqlLocalizer.Internal;
 using SecretCollect.Localization.SqlLocalizer.Settings;
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,7 @@ namespace SecretCollect.Localization.SqlLocalizer
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
 
-            var cacheKey = _getSpecificCacheKey(culture, _baseName, key);
+            var cacheKey = CacheKeyProvider.GetSpecificCacheKey(culture, _baseName, key);
 
             var localization = _memoryCache.GetOrCreate(cacheKey, entry =>
             {
@@ -75,7 +76,7 @@ namespace SecretCollect.Localization.SqlLocalizer
         /// <inheritdoc />
         public IEnumerable<string> GetAllResourceStrings(CultureInfo culture, bool throwOnMissing)
         {
-            var cacheKey = _getBaseCacheKey(culture);
+            var cacheKey = CacheKeyProvider.GetBaseCacheKey(culture, _baseName);
 
             var resourceStrings = _memoryCache.GetOrCreate(cacheKey, entry =>
             {
@@ -149,9 +150,5 @@ namespace SecretCollect.Localization.SqlLocalizer
 
             return localization?.Text;
         }
-
-        private string _getBaseCacheKey(CultureInfo culture) => $"Culture={culture.Name};BaseKey={_baseName}";
-
-        private string _getSpecificCacheKey(CultureInfo culture, string @base, string key) => $"Culture={culture.Name};BaseKey={_baseName};MainKey={key}";
     }
 }
