@@ -1,4 +1,4 @@
-﻿// Copyright (c) SecretCollect B.V. All rights reserved.
+// Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using Microsoft.AspNetCore.Http;
@@ -86,15 +86,16 @@ namespace SecretCollect.Localization.SqlLocalizer
                 if (!context.SupportedCultures.Any(c => c.Name == cultureName))
                     return null;
 
-                var names = context.LocalizationKeys
-                    .Where(k => k.Base == _baseName)
-                    .Select(k => k.Key)
+                var records = context.LocalizationRecords
+                    .Where(r => r.Culture.Name == cultureName)
+                    .Where(r => r.LocalizationKey.Base == _baseName)
+                    .Select(r => r.Text)
                     .ToArray();
 
-                if (!names.Any())
+                if (!records.Any())
                     return null;
 
-                return names;
+                return records;
             });
 
             if (resourceStrings == null)
