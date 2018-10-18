@@ -1,4 +1,4 @@
-﻿// Copyright (c) SecretCollect B.V. All rights reserved.
+// Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -9,11 +9,11 @@ using Xunit;
 
 namespace SecretCollect.Localization.SqlLocalizer.IntegrationTests
 {
-    public class HelloWorld : IClassFixture<WebApplicationFactory<Startup>>
+    public class SimpleControllerTests : IClassFixture<WebApplicationFactory<Startup>>
     {
         private readonly HttpClient _client;
 
-        public HelloWorld(WebApplicationFactory<Startup> fixture)
+        public SimpleControllerTests(WebApplicationFactory<Startup> fixture)
         {
             // Arrange
             _client = fixture.CreateDefaultClient();

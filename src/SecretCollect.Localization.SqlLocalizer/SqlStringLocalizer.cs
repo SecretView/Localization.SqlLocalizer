@@ -1,4 +1,4 @@
-﻿// Copyright (c) SecretCollect B.V. All rights reserved.
+// Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using Microsoft.AspNetCore.Http;
@@ -82,8 +82,7 @@ namespace SecretCollect.Localization.SqlLocalizer
 
         /// <inheritdoc />
         public IStringLocalizer WithCulture(CultureInfo culture)
-        {
-            return culture == null
+            => culture == null
                 ? new SqlStringLocalizer(
                     _stringProvider,
                     _baseName,
@@ -93,7 +92,6 @@ namespace SecretCollect.Localization.SqlLocalizer
                     _baseName,
                     culture,
                     _logger);
-        }
 
         /// <inheritdoc />
         public virtual IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures) =>

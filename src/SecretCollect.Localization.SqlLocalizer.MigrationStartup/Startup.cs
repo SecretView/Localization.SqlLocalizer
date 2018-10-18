@@ -1,4 +1,4 @@
-﻿// Copyright (c) SecretCollect B.V. All rights reserved.
+// Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using Microsoft.AspNetCore.Builder;
@@ -15,11 +15,9 @@ namespace SecretCollect.Localization.SqlLocalizer.MigrationStartup
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            app.Run(async (context) =>
+            => app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("Hello World!");
             });
-        }
     }
 }

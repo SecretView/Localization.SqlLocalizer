@@ -1,4 +1,4 @@
-﻿// Copyright (c) SecretCollect B.V. All rights reserved.
+// Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using Microsoft.EntityFrameworkCore;
@@ -72,9 +72,15 @@ namespace SecretCollect.Localization.SqlLocalizer.Data
         /// <param name="culture">The culture</param>
         /// <returns>All keys with missing localizations</returns>
         public IQueryable<LocalizationKey> GetMissingLocalizationsForCulture(SupportedCulture culture)
-        {
-            return LocalizationKeys.Where(k => !SupportedCultures.Where(c => c.Id == culture.Id).SelectMany(s => s.Records.Where(r => r.Status != RecordStatus.New).Select(r => r.LocalizationKey.Id)).Contains(k.Id));
-        }
+            => LocalizationKeys
+                .Where(k =>!SupportedCultures
+                    .Where(c => c.Id == culture.Id)
+                    .SelectMany(s => s.Records
+                        .Where(r => r.Status != RecordStatus.New)
+                        .Select(r => r.LocalizationKey.Id)
+                    )
+                    .Contains(k.Id)
+                );
 
         /// <inheritdoc />
         public override int SaveChanges()
@@ -93,7 +99,7 @@ namespace SecretCollect.Localization.SqlLocalizer.Data
         }
 
         /// <inheritdoc />
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             ChangeTracker.DetectChanges();
             _setUpdatedTimeStampForLocalizationRecord();
@@ -101,7 +107,7 @@ namespace SecretCollect.Localization.SqlLocalizer.Data
         }
 
         /// <inheritdoc />
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             ChangeTracker.DetectChanges();
             _setUpdatedTimeStampForLocalizationRecord();

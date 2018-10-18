@@ -1,4 +1,4 @@
-﻿// Copyright (c) SecretCollect B.V. All rights reserved.
+// Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -11,10 +11,12 @@ namespace SecretCollect.Localization.SqlLocalizer.MigrationStartup
 {
     internal class DisableCS1591CSharpMigrationsGenerator : CSharpMigrationsGenerator
     {
-        private static string BEGIN_OF_FILE_LICENSE = 
+#pragma warning disable IDE1006 // Naming Styles
+        private static readonly string BEGIN_OF_FILE_LICENSE = 
             "// Copyright (c) SecretCollect B.V. All rights reserved." + Environment.NewLine +
             "// Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information." + Environment.NewLine +
             Environment.NewLine;
+#pragma warning restore IDE1006 // Naming Styles
         private const string BEGIN_OF_FILE_PRAGMA = "#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member";
         private const string END_OF_FILE_PRAGMA = "#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member";
 
