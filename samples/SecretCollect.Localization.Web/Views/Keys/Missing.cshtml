@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SecretCollect.Localization.Web.Models.MissingLocalizationsVM>
+@model IEnumerable<SecretCollect.Localization.Web.Models.MissingLocalizationsVM>
 @inject IViewLocalizer localizer
 @{
     ViewData["Title"] = localizer["MISSING_TRANSLATIONS"];
@@ -15,13 +15,13 @@
             if (i == 0)
             {
                 <li role="presentation" class="active">
-                    <a href="#@item.CultureName" aria-controls="culture-@item.CultureName" role="tab" data-toggle="tab">@item.CultureName (@item.LocalizationKeys.Count())</a>
+                    <a href="#culture-@item.CultureName" aria-controls="culture-@item.CultureName" role="tab" data-toggle="tab">@item.CultureName (@item.LocalizationKeys.Count())</a>
                 </li>
             }
             else
             {
                 <li role="presentation">
-                    <a href="#@item.CultureName" aria-controls="culture-@item.CultureName" role="tab" data-toggle="tab">@item.CultureName (@item.LocalizationKeys.Count())</a>
+                    <a href="#culture-@item.CultureName" aria-controls="culture-@item.CultureName" role="tab" data-toggle="tab">@item.CultureName (@item.LocalizationKeys.Count())</a>
                 </li>
             }
         }
