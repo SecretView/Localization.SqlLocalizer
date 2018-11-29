@@ -69,5 +69,26 @@ namespace SecretCollect.Localization.SqlLocalizer
             foreach (var baseKey in baseKeys)
                 Cache(baseKey, absoluteExpirationRelativeToNow);
         }
+
+        /// <summary>
+        /// Cache all keys from which a record was recently used
+        /// </summary>
+        /// <param name="maxAge">The maximum age of the record LastUsed param</param>
+        /// <param name="absoluteExpirationRelativeToNow">The absolute expiration relative to now</param>
+        public void CacheRecentlyUsed(TimeSpan maxAge, TimeSpan? absoluteExpirationRelativeToNow = null)
+        {
+            var lastUsed = DateTime.UtcNow - maxAge;
+            var records = _context.LocalizationKeys
+                .Where(k => k.Records.Any(r => r.LastUsed >= lastUsed))
+                .SelectMany(k => k.Records)
+                .Select(r => new { r.Text, r.LocalizationKey.Base, r.LocalizationKey.Key, CultureName = r.Culture.Name })
+                .ToArray();
+
+            foreach (var record in records)
+            {
+                var cacheKey = CacheKeyProvider.GetSpecificCacheKey(record.CultureName, record.Base, record.Key);
+                _memoryCache.Set(cacheKey, record.Text, absoluteExpirationRelativeToNow.Value);
+            }
+        }
     }
 }
