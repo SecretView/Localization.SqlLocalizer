@@ -41,7 +41,7 @@ namespace SecretCollect.Localization.SqlLocalizer
 
                 var value = GetStringSafely(name, _culture);
 
-                return new LocalizedString(name, value ?? name, resourceNotFound: value == null, searchedLocation: _baseName);
+                return new LocalizedString(name, value ?? name, resourceNotFound: value == null, searchedLocation: BaseName);
             }
         }
 
@@ -58,7 +58,7 @@ namespace SecretCollect.Localization.SqlLocalizer
                 var format = GetStringSafely(name, _culture);
                 var value = string.Format(_culture, format ?? name, arguments);
 
-                return new LocalizedString(name, value, resourceNotFound: format == null, searchedLocation: _baseName);
+                return new LocalizedString(name, value, resourceNotFound: format == null, searchedLocation: BaseName);
             }
         }
 

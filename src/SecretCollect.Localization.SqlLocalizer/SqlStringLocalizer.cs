@@ -22,7 +22,7 @@ namespace SecretCollect.Localization.SqlLocalizer
         /// <summary>
         /// The baseName / key used for key lookup
         /// </summary>
-        protected readonly string _baseName;
+        protected readonly string BaseName;
         private readonly IStringProvider _stringProvider;
         private readonly ILogger _logger;
 
@@ -47,7 +47,7 @@ namespace SecretCollect.Localization.SqlLocalizer
         public SqlStringLocalizer(IStringProvider stringProvider, string baseName, ILogger logger)
         {
             _stringProvider = stringProvider ?? throw new ArgumentNullException(nameof(stringProvider));
-            _baseName = baseName ?? throw new ArgumentNullException(nameof(baseName));
+            BaseName = baseName ?? throw new ArgumentNullException(nameof(baseName));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -61,7 +61,7 @@ namespace SecretCollect.Localization.SqlLocalizer
 
                 var value = GetStringSafely(name, null);
 
-                return new LocalizedString(name, value ?? name, resourceNotFound: value == null, searchedLocation: _baseName);
+                return new LocalizedString(name, value ?? name, resourceNotFound: value == null, searchedLocation: BaseName);
             }
         }
 
@@ -76,7 +76,7 @@ namespace SecretCollect.Localization.SqlLocalizer
                 var format = GetStringSafely(name, null);
                 var value = string.Format(format ?? name, arguments);
 
-                return new LocalizedString(name, value, resourceNotFound: format == null, searchedLocation: _baseName);
+                return new LocalizedString(name, value, resourceNotFound: format == null, searchedLocation: BaseName);
             }
         }
 
@@ -85,11 +85,11 @@ namespace SecretCollect.Localization.SqlLocalizer
             => culture == null
                 ? new SqlStringLocalizer(
                     _stringProvider,
-                    _baseName,
+                    BaseName,
                     _logger)
                 : new SqlStringWithCultureLocalizer(
                     _stringProvider,
-                    _baseName,
+                    BaseName,
                     culture,
                     _logger);
 
@@ -110,7 +110,7 @@ namespace SecretCollect.Localization.SqlLocalizer
 
             var keyCulture = culture ?? CultureInfo.CurrentUICulture;
 
-            _logger.SearchedLocation(name, _baseName, keyCulture);
+            _logger.SearchedLocation(name, BaseName, keyCulture);
 
             return _stringProvider.GetString(name, keyCulture);
         }
@@ -133,7 +133,7 @@ namespace SecretCollect.Localization.SqlLocalizer
             foreach (var name in resourceNames)
             {
                 var value = GetStringSafely(name, culture);
-                yield return new LocalizedString(name, value ?? name, resourceNotFound: value == null, searchedLocation: _baseName);
+                yield return new LocalizedString(name, value ?? name, resourceNotFound: value == null, searchedLocation: BaseName);
             }
         }
 
