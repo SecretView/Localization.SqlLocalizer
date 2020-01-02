@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageVersion>1.4.1</PackageVersion>
+    <VersionPrefix>0.0.1</VersionPrefix>
+    <VersionPrefix Condition="'$(packageversion)' != ''">$(PackageVersion)</VersionPrefix>
+    <VersionSuffix></VersionSuffix>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageTags>globalization-and-localization asp-net-core sql</PackageTags>
+    <Title>SecretCollect.Localization.SqlLocalizer</Title>
+    <Product>$(Title)</Product>
+    <Description>Package to enable localizations using EF &amp; SQL</Description>
+    <PackageProjectUrl>https://github.com/SecretView/Localization.SqlLocalizer</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SecretView/Localization.SqlLocalizer</RepositoryUrl>
+  </PropertyGroup>
+
+</Project>

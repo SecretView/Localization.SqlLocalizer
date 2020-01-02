@@ -1,4 +1,4 @@
-﻿// Copyright (c) SecretCollect B.V. All rights reserved.
+// Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using SecretCollect.Localization.SqlLocalizer.Data;
@@ -40,13 +40,13 @@ namespace SimpleMvc
             {
                 context.LocalizationKeys.Add(item.Key);
                 context.SaveChanges();
-                foreach (var translation in item.Value)
+                foreach (var (Culture, Value) in item.Value)
                     context.LocalizationRecords.Add(new LocalizationRecord()
                     {
-                        Culture = translation.Culture,
+                        Culture = Culture,
                         LocalizationKey = item.Key,
                         Status = RecordStatus.HumanTranslated,
-                        Text = translation.Value
+                        Text = Value
                     }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
                 context.SaveChanges();
             }
