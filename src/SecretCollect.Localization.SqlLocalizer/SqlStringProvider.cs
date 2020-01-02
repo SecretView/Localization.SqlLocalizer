@@ -135,6 +135,7 @@ namespace SecretCollect.Localization.SqlLocalizer
 
             if (localization == null && culture.FallbackCulture != null)
             {
+                context.Entry(culture.FallbackCulture).Reference(x => x.FallbackCulture).Load();
                 return _getLocalizationString(context, culture.FallbackCulture, baseKey, mainKey, updateLastUsed);
             }
 
