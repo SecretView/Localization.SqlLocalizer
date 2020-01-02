@@ -1,7 +1,6 @@
 // Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
@@ -117,10 +116,39 @@ namespace SecretCollect.Localization.SqlLocalizer
         private string _getLocalizationString(LocalizationContext context, CultureInfo culture, string baseKey, string mainKey, bool updateLastUsed)
         {
             var cultureName = culture.Name;
-            var dbCulture = context.SupportedCultures.SingleOrDefault(c => c.Name == cultureName && c.IsSupported);
+            var dbCulture = context.SupportedCultures
+                .Include(c => c.FallbackCulture)
+                .SingleOrDefault(c => c.Name == cultureName && c.IsSupported);
             if (dbCulture == null)
                 return null;
 
+            return _getLocalizationString(context, dbCulture, baseKey, mainKey, updateLastUsed);
+        }
+
+        private string _getLocalizationString(LocalizationContext context, SupportedCulture culture, string baseKey, string mainKey, bool updateLastUsed)
+        {
+            var dbKey = _getOrCreateKey(context, baseKey, mainKey);
+
+            var localization = context.LocalizationRecords
+                .Where(r => r.LocalizationKey.Id == dbKey.Id && r.Culture.Id == culture.Id)
+                .SingleOrDefault();
+
+            if (localization == null && culture.FallbackCulture != null)
+            {
+                return _getLocalizationString(context, culture.FallbackCulture, baseKey, mainKey, updateLastUsed);
+            }
+
+            if (updateLastUsed && localization != null)
+            {
+                localization.LastUsed = DateTime.Now;
+                context.SaveChanges();
+            }
+
+            return localization?.Text;
+        }
+
+        private static LocalizationKey _getOrCreateKey(LocalizationContext context, string baseKey, string mainKey)
+        {
             var dbKey = context.LocalizationKeys.SingleOrDefault(k => k.Base == baseKey && k.Key == mainKey);
             if (dbKey == null)
             {
@@ -136,7 +164,7 @@ namespace SecretCollect.Localization.SqlLocalizer
                     context.LocalizationKeys.Add(dbKey);
                     context.SaveChanges();
                 }
-                catch (DbUpdateException ex) when ((ex.InnerException as System.Data.SqlClient.SqlException)?.Number == 2601)
+                catch (DbUpdateException ex) when (( ex.InnerException as System.Data.SqlClient.SqlException )?.Number == 2601)
                 {
                     // Key already exists, (concurrent request probably added it): reload entity.
                     context.Entry(dbKey).State = EntityState.Detached;
@@ -144,17 +172,7 @@ namespace SecretCollect.Localization.SqlLocalizer
                 }
             }
 
-            var localization = context.LocalizationRecords
-                .Where(r => r.LocalizationKey.Id == dbKey.Id && r.Culture.Id == dbCulture.Id)
-                .SingleOrDefault();
-
-            if (updateLastUsed && localization != null)
-            {
-                localization.LastUsed = DateTime.Now;
-                context.SaveChanges();
-            }
-
-            return localization?.Text;
+            return dbKey;
         }
     }
 }

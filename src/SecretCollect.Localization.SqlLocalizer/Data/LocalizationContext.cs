@@ -44,6 +44,7 @@ namespace SecretCollect.Localization.SqlLocalizer.Data
             builder.Entity<SupportedCulture>().HasKey(s => s.Id);
             builder.Entity<SupportedCulture>().HasIndex(s => s.Name).IsUnique(true);
             builder.Entity<SupportedCulture>().Property(s => s.Name).IsRequired().HasMaxLength(64);
+            builder.Entity<SupportedCulture>().HasOne(s => s.FallbackCulture).WithMany().HasForeignKey(s => s.FallbackCultureId).IsRequired(false);
 
             builder.Entity<LocalizationKey>().HasKey(s => s.Id);
             builder.Entity<LocalizationKey>().HasIndex(s => new { s.Base, s.Key }).IsUnique(true).HasFilter("[Key] IS NOT NULL");

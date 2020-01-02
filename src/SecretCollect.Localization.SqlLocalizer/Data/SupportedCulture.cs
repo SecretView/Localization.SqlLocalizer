@@ -1,4 +1,4 @@
-﻿// Copyright (c) SecretCollect B.V. All rights reserved.
+// Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using System;
@@ -30,5 +30,8 @@ namespace SecretCollect.Localization.SqlLocalizer.Data
         /// The <see cref="LocalizationRecord"/> for this culture
         /// </summary>
         public ICollection<LocalizationRecord> Records { get; set; }
+
+        public Guid? FallbackCultureId { get; set; }
+        public SupportedCulture FallbackCulture { get; set; }
     }
 }
