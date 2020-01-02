@@ -32,7 +32,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddDbContext<LocalizationContext>(optionsAction);
             services.TryAddSingleton<IConfigureOptions<GlobalizationOptions>, ConfigureGlobalizationSettings>();
             services.TryAddSingleton<IConfigureOptions<RequestLocalizationOptions>, ConfigureRequestLocalizationOptions>();
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<IStringLocalizerFactory, SqlStringLocalizerFactory>();
             services.TryAddTransient(typeof(IStringLocalizer<>), typeof(SqlStringLocalizer<>));
             services.TryAddTransient<Preloader>();

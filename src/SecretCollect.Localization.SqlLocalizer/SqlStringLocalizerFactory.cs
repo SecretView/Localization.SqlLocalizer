@@ -1,8 +1,9 @@
-﻿// Copyright (c) SecretCollect B.V. All rights reserved.
+// Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -18,7 +19,7 @@ namespace SecretCollect.Localization.SqlLocalizer
     public class SqlStringLocalizerFactory : IStringLocalizerFactory
     {
         private readonly ILoggerFactory _loggerFactory;
-        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IMemoryCache _memoryCache;
         private readonly IOptions<GlobalizationOptions>  _globalizationOptions;
 
@@ -26,13 +27,13 @@ namespace SecretCollect.Localization.SqlLocalizer
         /// Constructor
         /// </summary>
         /// <param name="loggerFactory">The <see cref="ILoggerFactory"/> used for logger creation</param>
-        /// <param name="contextAccessor">The <see cref="IHttpContextAccessor"/> used when creating new <see cref="SqlStringLocalizer"/></param>
+        /// <param name="serviceScopeFactory">The <see cref="IServiceScopeFactory"/> used when creating new <see cref="SqlStringLocalizer"/></param>
         /// <param name="globalizationOptions">The options used when creating <see cref="SqlStringLocalizer"/></param>
         /// <param name="memoryCache">The <see cref="IMemoryCache"/> used when creating new <see cref="SqlStringLocalizer"/></param>
-        public SqlStringLocalizerFactory(ILoggerFactory loggerFactory, IHttpContextAccessor contextAccessor, IOptions<GlobalizationOptions> globalizationOptions, IMemoryCache memoryCache)
+        public SqlStringLocalizerFactory(ILoggerFactory loggerFactory, IServiceScopeFactory serviceScopeFactory, IOptions<GlobalizationOptions> globalizationOptions, IMemoryCache memoryCache)
         {
             _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
-            _contextAccessor = contextAccessor ?? throw new ArgumentNullException(nameof(contextAccessor));
+            _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
             _globalizationOptions = globalizationOptions ?? throw new ArgumentNullException(nameof(globalizationOptions));
             _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
         }
@@ -104,7 +105,7 @@ namespace SecretCollect.Localization.SqlLocalizer
         protected virtual SqlStringLocalizer CreateSqlStringLocalizer(string baseName)
         {
             var logger = _loggerFactory.CreateLogger<SqlStringLocalizer>();
-            return new SqlStringLocalizer(baseName, _contextAccessor, _memoryCache, _globalizationOptions, logger);
+            return new SqlStringLocalizer(baseName, _serviceScopeFactory, _memoryCache, _globalizationOptions, logger);
         }
 
         private static string _trimPrefix(string name, string prefix)

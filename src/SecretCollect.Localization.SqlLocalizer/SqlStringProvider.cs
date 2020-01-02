@@ -23,20 +23,20 @@ namespace SecretCollect.Localization.SqlLocalizer
     {
         private readonly IMemoryCache _memoryCache;
         private readonly string _baseName;
-        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IOptions<GlobalizationOptions> _globalizationOptions;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="baseName">The basename of the localization key</param>
-        /// <param name="contextAccessor">Used for accessing the current <see cref="LocalizationContext"/></param>
+        /// <param name="serviceScopeFactory">Used for accessing the current <see cref="LocalizationContext"/></param>
         /// <param name="memoryCache">The memory cache used for caching the localization lookup</param>
         /// <param name="globalizationOptions">The options used to check the cache time</param>
-        public SqlStringProvider(string baseName, IHttpContextAccessor contextAccessor, IMemoryCache memoryCache, IOptions<GlobalizationOptions> globalizationOptions)
+        public SqlStringProvider(string baseName, IServiceScopeFactory serviceScopeFactory, IMemoryCache memoryCache, IOptions<GlobalizationOptions> globalizationOptions)
         {
             _baseName = baseName ?? throw new ArgumentNullException(nameof(baseName));
-            _contextAccessor = contextAccessor ?? throw new ArgumentNullException(nameof(contextAccessor));
+            _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
             _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
             _globalizationOptions = globalizationOptions ?? throw new ArgumentNullException(nameof(globalizationOptions));
         }
@@ -64,8 +64,11 @@ namespace SecretCollect.Localization.SqlLocalizer
             {
                 entry.AbsoluteExpirationRelativeToNow = _globalizationOptions.Value.CacheTime;
 
-                var context = _contextAccessor.HttpContext.RequestServices.GetService<LocalizationContext>();
-                return _getLocalizationString(context, culture, _baseName, key, updateLastUsed );
+                using (var scope = _serviceScopeFactory.CreateScope())
+                {
+                    var context = scope.ServiceProvider.GetService<LocalizationContext>();
+                    return _getLocalizationString(context, culture, _baseName, key, updateLastUsed);
+                }
             });
 
             if (localization == null)
@@ -82,21 +85,24 @@ namespace SecretCollect.Localization.SqlLocalizer
             {
                 entry.AbsoluteExpirationRelativeToNow = _globalizationOptions.Value.CacheTime;
                 var cultureName = culture.Name;
-                var context = _contextAccessor.HttpContext.RequestServices.GetService<LocalizationContext>();
+                using (var scope = _serviceScopeFactory.CreateScope())
+                {
+                    var context = scope.ServiceProvider.GetService<LocalizationContext>();
 
-                if (!context.SupportedCultures.Any(c => c.Name == cultureName))
-                    return null;
+                    if (!context.SupportedCultures.Any(c => c.Name == cultureName))
+                        return null;
 
-                var records = context.LocalizationRecords
-                    .Where(r => r.Culture.Name == cultureName)
-                    .Where(r => r.LocalizationKey.Base == _baseName)
-                    .Select(r => r.Text)
-                    .ToArray();
+                    var records = context.LocalizationRecords
+                        .Where(r => r.Culture.Name == cultureName)
+                        .Where(r => r.LocalizationKey.Base == _baseName)
+                        .Select(r => r.Text)
+                        .ToArray();
 
-                if (!records.Any())
-                    return null;
+                    if (!records.Any())
+                        return null;
 
-                return records;
+                    return records;
+                }
             });
 
             if (resourceStrings == null)

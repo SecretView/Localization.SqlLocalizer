@@ -1,8 +1,8 @@
 // Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -30,12 +30,12 @@ namespace SecretCollect.Localization.SqlLocalizer
         /// Constructor
         /// </summary>
         /// <param name="baseName">The basename used for key lookup</param>
-        /// <param name="contextAccessor"><see cref="IHttpContextAccessor"/> used for creating the <see cref="SqlStringProvider"/></param>
+        /// <param name="serviceScopeFactory"><see cref="IServiceScopeFactory"/> used for creating the <see cref="SqlStringProvider"/></param>
         /// <param name="memoryCache"><see cref="IMemoryCache"/> used for creating the <see cref="SqlStringProvider"/></param>
         /// <param name="globalizationOptions"><see cref="GlobalizationOptions"/> options used for creating the <see cref="SqlStringProvider"/></param>
         /// <param name="logger">The <see cref="ILogger"/> used for logging</param>
-        public SqlStringLocalizer(string baseName, IHttpContextAccessor contextAccessor, IMemoryCache memoryCache, IOptions<GlobalizationOptions> globalizationOptions, ILogger logger)
-            : this(new SqlStringProvider(baseName, contextAccessor, memoryCache, globalizationOptions), baseName, logger)
+        public SqlStringLocalizer(string baseName, IServiceScopeFactory serviceScopeFactory, IMemoryCache memoryCache, IOptions<GlobalizationOptions> globalizationOptions, ILogger logger)
+            : this(new SqlStringProvider(baseName, serviceScopeFactory, memoryCache, globalizationOptions), baseName, logger)
         { }
 
         /// <summary>
