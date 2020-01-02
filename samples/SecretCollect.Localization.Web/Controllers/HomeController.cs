@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using SecretCollect.Localization.Web.Models;
 using System.Diagnostics;

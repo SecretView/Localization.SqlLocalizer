@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SecretCollect.Localization.SqlLocalizer.Data;
 using SecretCollect.Localization.Web.Models;
