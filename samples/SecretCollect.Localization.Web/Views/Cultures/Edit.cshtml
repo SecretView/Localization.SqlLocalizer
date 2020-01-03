@@ -1,7 +1,7 @@
-@model SecretCollect.Localization.Web.Models.KeyVM
+@model SecretCollect.Localization.Web.Models.CultureVM
 @inject IViewLocalizer localizer
 @{
-    ViewData["Title"] = localizer["ADD_NEW_KEY"];
+    ViewData["Title"] = Model.Name;
 }
 
 @if (Model.SaveResult != SaveResult.None)
@@ -20,26 +20,31 @@
     }
 }
 
-<h2>@localizer["ADD_NEW_KEY"]</h2>
+<h2>@Model.Name</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Add">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id" class="form-control" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Base" class="control-label"></label>
-                <input asp-for="Base" class="form-control" />
-                <span asp-validation-for="Base" class="text-danger"></span>
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Main" class="control-label"></label>
-                <input asp-for="Main" class="form-control" />
-                <span asp-validation-for="Main" class="text-danger"></span>
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="IsSupported" /> @Html.DisplayNameFor(model => model.IsSupported)
+                    </label>
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="Comment" class="control-label"></label>
-                <input asp-for="Comment" class="form-control" />
-                <span asp-validation-for="Comment" class="text-danger"></span>
+                <label asp-for="FallbackCultureId" class="control-label"></label>
+                <select asp-for="FallbackCultureId" asp-items="@Model.OtherCultures.Select(x => new SelectListItem(x.Name, x.Id.ToString(), x.Id == Model.FallbackCultureId))">
+                    <option value="">@localizer["NO_FALLBACK"]</option>
+                </select>
+                <span asp-validation-for="FallbackCultureId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="@localizer["SAVE"]" class="btn btn-default" />
@@ -51,4 +56,3 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-

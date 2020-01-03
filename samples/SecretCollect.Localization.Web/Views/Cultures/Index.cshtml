@@ -1,0 +1,42 @@
+@model IEnumerable<(Guid Id, string Name)>
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = localizer["BASE_CULTURES"];
+}
+
+<h2>@localizer["BASE_CULTURES"]</h2>
+
+<p>
+    <a asp-action="Add">@localizer["ADD_NEW_CULTURE"]</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @localizer["BASE_CULTURES"]
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">@item.Name</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td>
+                    <p style="font-style: italic;">@localizer["NO_CULTURES_FOUND"]</p>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

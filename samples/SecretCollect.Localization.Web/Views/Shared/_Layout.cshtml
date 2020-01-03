@@ -1,4 +1,4 @@
-﻿@inject Microsoft.Extensions.Options.IOptions<Microsoft.AspNetCore.Builder.RequestLocalizationOptions> localizationOptions
+@inject Microsoft.Extensions.Options.IOptions<Microsoft.AspNetCore.Builder.RequestLocalizationOptions> localizationOptions
 @inject IHtmlLocalizer<SecretCollect.Localization.Web.Views.Shared.Layout> localizer
 <!DOCTYPE html>
 <html>
@@ -36,6 +36,7 @@
                     <li><a asp-area="" asp-controller="Keys" asp-action="Index">@localizer["MENU_KEYS"]</a></li>
                     <li><a asp-area="" asp-controller="Keys" asp-action="Search">@localizer["MENU_SEARCH"]</a></li>
                     <li><a asp-area="" asp-controller="Keys" asp-action="Missing">@localizer["MENU_MISSING"]</a></li>
+                    <li><a asp-area="" asp-controller="Cultures" asp-action="Index">@localizer["MENU_CULTURES"]</a></li>
                 </ul>
             </div>
         </div>
