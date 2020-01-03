@@ -12,10 +12,10 @@ namespace SimpleMvc
     {
         public static void InitializeDatabase(LocalizationContext context)
         {
-            var cultureNL = new SupportedCulture() { IsSupported = true, Name = "nl" };
             var cultureEN = new SupportedCulture() { IsSupported = true, Name = "en" };
-            context.SupportedCultures.Add(cultureNL);
+            var cultureNL = new SupportedCulture() { IsSupported = true, Name = "nl", FallbackCulture = cultureEN };
             context.SupportedCultures.Add(cultureEN);
+            context.SupportedCultures.Add(cultureNL);
             context.SaveChanges();
 
             var collection = new Dictionary<LocalizationKey, (SupportedCulture Culture, string Value)[]>()
@@ -34,6 +34,7 @@ namespace SimpleMvc
                     { new LocalizationKey() { Base = typeof(Months).FullName, Key = "DECEMBER" }, new [] { (cultureNL, "December"), (cultureEN, "December") } },
                     { new LocalizationKey() { Base = typeof(SimpleController).FullName, Key = "HELLO_WORLD" }, new [] { (cultureNL, "Hallo wereld!"), (cultureEN, "Hello world!") } },
                     { new LocalizationKey() { Base = typeof(SimpleController).FullName, Key = "HELLO_PERSON" }, new [] { (cultureNL, "Hallo {0}!"), (cultureEN, "Hello {0}!") } },
+                    { new LocalizationKey() { Base = typeof(SimpleController).FullName, Key = "HELLO_THING" }, new [] { (cultureEN, "Hello something!") } },
                 };
 
             foreach (var item in collection)

@@ -29,5 +29,11 @@ namespace SimpleMvc.Controllers
             var localization = _localizer["HELLO_PERSON", person];
             return Content(localization);
         }
+
+        public IActionResult HelloThing()
+        {
+            var localization = _localizer["HELLO_THING"];
+            return Content(localization);
+        }
     }
 }

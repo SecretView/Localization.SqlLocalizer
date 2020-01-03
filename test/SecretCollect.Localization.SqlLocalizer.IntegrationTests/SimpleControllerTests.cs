@@ -60,6 +60,19 @@ namespace SecretCollect.Localization.SqlLocalizer.IntegrationTests
         }
 
         [Fact]
+        public async Task Fallback_Language()
+        {
+            // Act
+            var response = await _client.GetAsync("/Simple/HelloThing?ui-culture=nl");
+            response.EnsureSuccessStatusCode();
+
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            // Assert
+            Assert.Equal("Hello something!", responseString);
+        }
+
+        [Fact]
         public async Task Force_Language_With_Argument()
         {
             // Act
