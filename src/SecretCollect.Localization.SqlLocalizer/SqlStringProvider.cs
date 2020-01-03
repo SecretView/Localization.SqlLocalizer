@@ -133,7 +133,7 @@ namespace SecretCollect.Localization.SqlLocalizer
                 .Where(r => r.LocalizationKey.Id == dbKey.Id && r.Culture.Id == culture.Id)
                 .SingleOrDefault();
 
-            if (localization == null && culture.FallbackCulture != null)
+            if (string.IsNullOrWhiteSpace(localization?.Text) && culture.FallbackCulture != null)
             {
                 context.Entry(culture.FallbackCulture).Reference(x => x.FallbackCulture).Load();
                 return _getLocalizationString(context, culture.FallbackCulture, baseKey, mainKey, updateLastUsed);
