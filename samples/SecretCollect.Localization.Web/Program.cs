@@ -1,17 +1,25 @@
-﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using SecretCollect.Localization.SqlLocalizer;
 using SecretCollect.Localization.SqlLocalizer.Data;
+using System;
+using System.Threading.Tasks;
 
 namespace SecretCollect.Localization.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateWebHostBuilder(args)
+            await CreateWebHostBuilder(args)
                 .Build()
-                .MigrateDatabase<LocalizationContext>()
-                .Run();
+                .MigrateDbContext<LocalizationContext>((context, serviceProvider) =>
+                {
+                    var preloader = serviceProvider.GetRequiredService<Preloader>();
+                    preloader.CacheRecentlyUsed(maxAge: TimeSpan.FromDays(1), absoluteExpirationRelativeToNow: TimeSpan.FromDays(365));
+                })
+                .RunAsync();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
