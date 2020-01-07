@@ -1,4 +1,4 @@
-﻿// Copyright (c) SecretCollect B.V. All rights reserved.
+// Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using System.Collections.Generic;
@@ -12,18 +12,19 @@ namespace SecretCollect.Localization.SqlLocalizer
     public interface IStringProvider
     {
         /// <summary>
-        /// Get a translated string based upon a key and culture
+        /// Get a localized string for the provided key and culture
         /// </summary>
         /// <param name="key">The key</param>
         /// <param name="culture">The culture</param>
+        /// <param name="updateLastUsed">Indicate if the LastUsed property of the record needs to be updated</param>
+        /// <param name="useFallBackCulture">Use the fallback culture when retrieving the culture</param>
         /// <returns>A localized string</returns>
-        string GetString(string key, CultureInfo culture);
+        string GetString(string key, CultureInfo culture, bool updateLastUsed, bool useFallBackCulture);
+
         /// <summary>
-        /// Get all localized strings for a culture
+        /// Get all localization keys
         /// </summary>
-        /// <param name="culture">The culture</param>
-        /// <param name="throwOnMissing">Throw an exception when no localized strings are found for the given culture</param>
-        /// <returns>A collection of localized strings</returns>
-        IEnumerable<string> GetAllResourceStrings(CultureInfo culture, bool throwOnMissing);
+        /// <returns>A collection of localization keys</returns>
+        IEnumerable<string> GetAllResourceKeys();
     }
 }

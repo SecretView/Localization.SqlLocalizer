@@ -1,7 +1,6 @@
 // Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
@@ -102,7 +101,7 @@ namespace SecretCollect.Localization.SqlLocalizer
         /// </summary>
         /// <param name="baseName">The basename</param>
         /// <returns>A new <see cref="SqlStringLocalizer"/></returns>
-        protected virtual SqlStringLocalizer CreateSqlStringLocalizer(string baseName)
+        protected internal virtual SqlStringLocalizer CreateSqlStringLocalizer(string baseName)
         {
             var logger = _loggerFactory.CreateLogger<SqlStringLocalizer>();
             return new SqlStringLocalizer(baseName, _serviceScopeFactory, _memoryCache, _globalizationOptions, logger);

@@ -54,7 +54,7 @@ namespace SecretCollect.Localization.SqlLocalizer
 
             foreach (var record in records)
             {
-                var cacheKey = CacheKeyProvider.GetSpecificCacheKey(record.CultureName, record.Base, record.Key);
+                var cacheKey = CacheKeyProvider.GetSpecificCacheKey(record.CultureName, record.Base, record.Key, false);
                 _memoryCache.Set(cacheKey, record.Text, absoluteExpirationRelativeToNow.Value);
             }
         }
@@ -86,7 +86,7 @@ namespace SecretCollect.Localization.SqlLocalizer
 
             foreach (var record in records)
             {
-                var cacheKey = CacheKeyProvider.GetSpecificCacheKey(record.CultureName, record.Base, record.Key);
+                var cacheKey = CacheKeyProvider.GetSpecificCacheKey(record.CultureName, record.Base, record.Key, false);
                 _memoryCache.Set(cacheKey, record.Text, absoluteExpirationRelativeToNow.Value);
             }
         }

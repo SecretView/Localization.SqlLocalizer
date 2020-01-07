@@ -20,6 +20,8 @@ namespace SecretCollect.Localization.SqlLocalizer
     /// </summary>
     public class SqlStringProvider : IStringProvider
     {
+        private const string ALL_RESOURCE_STRINGS = nameof(ALL_RESOURCE_STRINGS);
+
         private readonly IMemoryCache _memoryCache;
         private readonly string _baseName;
         private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -41,23 +43,14 @@ namespace SecretCollect.Localization.SqlLocalizer
         }
 
         /// <inheritdoc />
-        public string GetString(string key, CultureInfo culture) => GetString(key, culture, true);
-
-        /// <summary>
-        /// Get a localized string for the provided key and culture
-        /// </summary>
-        /// <param name="key">The key</param>
-        /// <param name="culture">The culture</param>
-        /// <param name="updateLastUsed">Indicate if the LastUsed property of the record needs to be updated</param>
-        /// <returns>A localized string</returns>
-        public string GetString(string key, CultureInfo culture, bool updateLastUsed)
+        public string GetString(string key, CultureInfo culture, bool updateLastUsed, bool useFallBackCulture)
         {
             if (culture == null)
                 throw new ArgumentNullException(nameof(culture));
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
 
-            var cacheKey = CacheKeyProvider.GetSpecificCacheKey(culture, _baseName, key);
+            var cacheKey = CacheKeyProvider.GetSpecificCacheKey(culture, _baseName, key, useFallBackCulture);
 
             var localization = _memoryCache.GetOrCreate(cacheKey, entry =>
             {
@@ -66,7 +59,7 @@ namespace SecretCollect.Localization.SqlLocalizer
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetService<LocalizationContext>();
-                    return _getLocalizationString(context, culture, _baseName, key, updateLastUsed);
+                    return _getLocalizationString(context, culture, _baseName, key, updateLastUsed, useFallBackCulture);
                 }
             });
 
@@ -76,25 +69,19 @@ namespace SecretCollect.Localization.SqlLocalizer
         }
 
         /// <inheritdoc />
-        public IEnumerable<string> GetAllResourceStrings(CultureInfo culture, bool throwOnMissing)
+        public IEnumerable<string> GetAllResourceKeys()
         {
-            var cacheKey = CacheKeyProvider.GetBaseCacheKey(culture, _baseName);
-
-            var resourceStrings = _memoryCache.GetOrCreate(cacheKey, entry =>
+            var resourceStrings = _memoryCache.GetOrCreate(ALL_RESOURCE_STRINGS, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = _globalizationOptions.Value.CacheTime;
-                var cultureName = culture.Name;
+
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetService<LocalizationContext>();
 
-                    if (!context.SupportedCultures.Any(c => c.Name == cultureName))
-                        return null;
-
-                    var records = context.LocalizationRecords
-                        .Where(r => r.Culture.Name == cultureName)
-                        .Where(r => r.LocalizationKey.Base == _baseName)
-                        .Select(r => r.Text)
+                    var records = context.LocalizationKeys
+                        .Where(r => r.Base == _baseName)
+                        .Select(r => r.Key)
                         .ToArray();
 
                     if (!records.Any())
@@ -105,15 +92,12 @@ namespace SecretCollect.Localization.SqlLocalizer
             });
 
             if (resourceStrings == null)
-            {
-                _memoryCache.Remove(cacheKey);
-                if (throwOnMissing)
-                    throw new Exception($"No localization keys found for culture {culture.Name} and base {_baseName}");
-            }
-            return resourceStrings;
+                _memoryCache.Remove(ALL_RESOURCE_STRINGS);
+
+            return resourceStrings ?? Array.Empty<string>();
         }
 
-        private string _getLocalizationString(LocalizationContext context, CultureInfo culture, string baseKey, string mainKey, bool updateLastUsed)
+        private string _getLocalizationString(LocalizationContext context, CultureInfo culture, string baseKey, string mainKey, bool updateLastUsed, bool useFallBackCulture)
         {
             var cultureName = culture.Name;
             var dbCulture = context.SupportedCultures
@@ -122,10 +106,10 @@ namespace SecretCollect.Localization.SqlLocalizer
             if (dbCulture == null)
                 return null;
 
-            return _getLocalizationString(context, dbCulture, baseKey, mainKey, updateLastUsed);
+            return _getLocalizationString(context, dbCulture, baseKey, mainKey, updateLastUsed, useFallBackCulture);
         }
 
-        private string _getLocalizationString(LocalizationContext context, SupportedCulture culture, string baseKey, string mainKey, bool updateLastUsed)
+        private string _getLocalizationString(LocalizationContext context, SupportedCulture culture, string baseKey, string mainKey, bool updateLastUsed, bool useFallBackCulture)
         {
             var dbKey = _getOrCreateKey(context, baseKey, mainKey);
 
@@ -133,10 +117,10 @@ namespace SecretCollect.Localization.SqlLocalizer
                 .Where(r => r.LocalizationKey.Id == dbKey.Id && r.Culture.Id == culture.Id)
                 .SingleOrDefault();
 
-            if (string.IsNullOrWhiteSpace(localization?.Text) && culture.FallbackCulture != null)
+            if (useFallBackCulture && string.IsNullOrWhiteSpace(localization?.Text) && culture.FallbackCulture != null)
             {
                 context.Entry(culture.FallbackCulture).Reference(x => x.FallbackCulture).Load();
-                return _getLocalizationString(context, culture.FallbackCulture, baseKey, mainKey, updateLastUsed);
+                return _getLocalizationString(context, culture.FallbackCulture, baseKey, mainKey, updateLastUsed, useFallBackCulture);
             }
 
             if (updateLastUsed && localization != null)

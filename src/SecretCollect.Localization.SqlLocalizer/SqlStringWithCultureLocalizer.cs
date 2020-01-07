@@ -1,4 +1,4 @@
-﻿// Copyright (c) SecretCollect B.V. All rights reserved.
+// Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using Microsoft.Extensions.Localization;
@@ -39,7 +39,7 @@ namespace SecretCollect.Localization.SqlLocalizer
                     throw new ArgumentNullException(nameof(name));
                 }
 
-                var value = GetStringSafely(name, _culture);
+                var value = GetStringSafely(name, _culture, true);
 
                 return new LocalizedString(name, value ?? name, resourceNotFound: value == null, searchedLocation: BaseName);
             }
@@ -55,7 +55,7 @@ namespace SecretCollect.Localization.SqlLocalizer
                     throw new ArgumentNullException(nameof(name));
                 }
 
-                var format = GetStringSafely(name, _culture);
+                var format = GetStringSafely(name, _culture, true);
                 var value = string.Format(_culture, format ?? name, arguments);
 
                 return new LocalizedString(name, value, resourceNotFound: format == null, searchedLocation: BaseName);

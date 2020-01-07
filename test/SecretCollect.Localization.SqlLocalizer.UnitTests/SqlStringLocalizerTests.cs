@@ -1,4 +1,4 @@
-﻿// Copyright (c) SecretCollect B.V. All rights reserved.
+// Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using Microsoft.Extensions.Logging.Abstractions;
@@ -15,7 +15,7 @@ namespace SecretCollect.Localization.SqlLocalizer.UnitTests
         {
             // Arrange
             var stringProviderMock = new Mock<IStringProvider>();
-            stringProviderMock.Setup(p => p.GetString(It.IsAny<string>(), It.IsAny<CultureInfo>())).Returns<string, CultureInfo>((x, y) => null);
+            stringProviderMock.Setup(p => p.GetString(It.IsAny<string>(), It.IsAny<CultureInfo>(), It.IsAny<bool>(), It.IsAny<bool>())).Returns<string>(null);
             var localizer = new SqlStringLocalizer(stringProviderMock.Object, "Test.Namespace.Foo.Bar", NullLogger.Instance);
 
             // Act
@@ -30,7 +30,7 @@ namespace SecretCollect.Localization.SqlLocalizer.UnitTests
         {
             // Arrange
             var stringProviderMock = new Mock<IStringProvider>();
-            stringProviderMock.Setup(p => p.GetString(It.IsAny<string>(), It.IsAny<CultureInfo>())).Returns<string, CultureInfo>((x, y) => null);
+            stringProviderMock.Setup(p => p.GetString(It.IsAny<string>(), It.IsAny<CultureInfo>(), It.IsAny<bool>(), It.IsAny<bool>())).Returns<string>(null);
             var localizer = new SqlStringLocalizer(stringProviderMock.Object, "Test.Namespace.Foo.Bar", NullLogger.Instance);
 
             // Act
@@ -45,7 +45,7 @@ namespace SecretCollect.Localization.SqlLocalizer.UnitTests
         {
             // Arrange
             var stringProviderMock = new Mock<IStringProvider>();
-            stringProviderMock.Setup(p => p.GetString(It.IsAny<string>(), It.IsAny<CultureInfo>())).Returns<string, CultureInfo>((x, y) => "Invoer tekst");
+            stringProviderMock.Setup(p => p.GetString(It.IsAny<string>(), It.IsAny<CultureInfo>(), It.IsAny<bool>(), It.IsAny<bool>())).Returns("Invoer tekst");
             var localizer = new SqlStringLocalizer(stringProviderMock.Object, "Test.Namespace.Foo.Bar", NullLogger.Instance);
 
             // Act
@@ -63,8 +63,8 @@ namespace SecretCollect.Localization.SqlLocalizer.UnitTests
             const string nlAnswer = "Invoer tekst";
             const string enAnswer = "Input text";
             var stringProviderMock = new Mock<IStringProvider>();
-            stringProviderMock.Setup(p => p.GetString(lookupKey, CultureInfo.GetCultureInfo("nl"))).Returns<string, CultureInfo>((x, y) => nlAnswer);
-            stringProviderMock.Setup(p => p.GetString(lookupKey, CultureInfo.GetCultureInfo("en"))).Returns<string, CultureInfo>((x, y) => enAnswer);
+            stringProviderMock.Setup(p => p.GetString(lookupKey, CultureInfo.GetCultureInfo("nl"), It.IsAny<bool>(), It.IsAny<bool>())).Returns(nlAnswer);
+            stringProviderMock.Setup(p => p.GetString(lookupKey, CultureInfo.GetCultureInfo("en"), It.IsAny<bool>(), It.IsAny<bool>())).Returns(enAnswer);
             var localizer = new SqlStringLocalizer(stringProviderMock.Object, "Test.Namespace.Foo.Bar", NullLogger.Instance);
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("nl");
 
@@ -73,8 +73,8 @@ namespace SecretCollect.Localization.SqlLocalizer.UnitTests
 
             // Assert
             Assert.Equal(nlAnswer, localizedString.Value);
-            stringProviderMock.Verify(moq => moq.GetString(lookupKey, CultureInfo.GetCultureInfo("nl")), Times.AtLeastOnce());
-            stringProviderMock.Verify(moq => moq.GetString(lookupKey, CultureInfo.GetCultureInfo("en")), Times.Never());
+            stringProviderMock.Verify(moq => moq.GetString(lookupKey, CultureInfo.GetCultureInfo("nl"), true, true), Times.AtLeastOnce());
+            stringProviderMock.Verify(moq => moq.GetString(lookupKey, CultureInfo.GetCultureInfo("en"), true, true), Times.Never());
         }
 
         [Fact]
@@ -85,8 +85,8 @@ namespace SecretCollect.Localization.SqlLocalizer.UnitTests
             const string nlAnswer = "Invoer tekst";
             const string enAnswer = "Input text";
             var stringProviderMock = new Mock<IStringProvider>();
-            stringProviderMock.Setup(p => p.GetString(lookupKey, CultureInfo.GetCultureInfo("nl"))).Returns<string, CultureInfo>((x, y) => nlAnswer);
-            stringProviderMock.Setup(p => p.GetString(lookupKey, CultureInfo.GetCultureInfo("en"))).Returns<string, CultureInfo>((x, y) => enAnswer);
+            stringProviderMock.Setup(p => p.GetString(lookupKey, CultureInfo.GetCultureInfo("nl"), It.IsAny<bool>(), It.IsAny<bool>())).Returns(nlAnswer);
+            stringProviderMock.Setup(p => p.GetString(lookupKey, CultureInfo.GetCultureInfo("en"), It.IsAny<bool>(), It.IsAny<bool>())).Returns(enAnswer);
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("nl");
             var currentUiLocalizer = new SqlStringLocalizer(stringProviderMock.Object, "Test.Namespace.Foo.Bar", NullLogger.Instance);
 

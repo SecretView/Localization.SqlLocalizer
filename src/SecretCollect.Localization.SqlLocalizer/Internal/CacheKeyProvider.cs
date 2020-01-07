@@ -9,7 +9,7 @@ namespace SecretCollect.Localization.SqlLocalizer.Internal
     {
         public static string GetBaseCacheKey(CultureInfo culture, string baseName) => $"Culture={culture.Name};BaseKey={baseName}";
 
-        public static string GetSpecificCacheKey(CultureInfo culture, string baseName, string key) => GetSpecificCacheKey(culture.Name, baseName, key);
-        public static string GetSpecificCacheKey(string cultureName, string baseName, string key) => $"Culture={cultureName};BaseKey={baseName};MainKey={key}";
+        public static string GetSpecificCacheKey(CultureInfo culture, string baseName, string key, bool useFallBackCulture) => GetSpecificCacheKey(culture.Name, baseName, key, useFallBackCulture);
+        public static string GetSpecificCacheKey(string cultureName, string baseName, string key, bool useFallBackCulture) => $"Culture={cultureName};BaseKey={baseName};MainKey={key};FallBack={useFallBackCulture}";
     }
 }

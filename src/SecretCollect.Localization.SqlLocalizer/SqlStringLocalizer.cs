@@ -59,7 +59,7 @@ namespace SecretCollect.Localization.SqlLocalizer
                 if (name == null)
                     throw new ArgumentNullException(nameof(name));
 
-                var value = GetStringSafely(name, null);
+                var value = GetStringSafely(name, null, true);
 
                 return new LocalizedString(name, value ?? name, resourceNotFound: value == null, searchedLocation: BaseName);
             }
@@ -73,7 +73,7 @@ namespace SecretCollect.Localization.SqlLocalizer
                 if (name == null)
                     throw new ArgumentNullException(nameof(name));
 
-                var format = GetStringSafely(name, null);
+                var format = GetStringSafely(name, null, true);
                 var value = string.Format(format ?? name, arguments);
 
                 return new LocalizedString(name, value, resourceNotFound: format == null, searchedLocation: BaseName);
@@ -102,8 +102,9 @@ namespace SecretCollect.Localization.SqlLocalizer
         /// </summary>
         /// <param name="name">The name of the key</param>
         /// <param name="culture">The culture to get the localization for</param>
+        /// <param name="useFallbackCulture">Try a fallback culture if no localization is found.</param>
         /// <returns>A localized string</returns>
-        protected string GetStringSafely(string name, CultureInfo culture)
+        protected string GetStringSafely(string name, CultureInfo culture, bool useFallbackCulture)
         {
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
@@ -112,7 +113,7 @@ namespace SecretCollect.Localization.SqlLocalizer
 
             _logger.SearchedLocation(name, BaseName, keyCulture);
 
-            return _stringProvider.GetString(name, keyCulture);
+            return _stringProvider.GetString(name, keyCulture, updateLastUsed: true, useFallbackCulture);
         }
 
         /// <summary>
@@ -126,52 +127,13 @@ namespace SecretCollect.Localization.SqlLocalizer
             if (culture == null)
                 throw new ArgumentNullException(nameof(culture));
 
-            var resourceNames = includeParentCultures
-                ? _getResourceNamesFromCultureHierarchy(culture)
-                : _stringProvider.GetAllResourceStrings(culture, true);
+            var resourceNames = _stringProvider.GetAllResourceKeys();
 
             foreach (var name in resourceNames)
             {
-                var value = GetStringSafely(name, culture);
+                var value = GetStringSafely(name, culture, includeParentCultures);
                 yield return new LocalizedString(name, value ?? name, resourceNotFound: value == null, searchedLocation: BaseName);
             }
-        }
-
-        private IEnumerable<string> _getResourceNamesFromCultureHierarchy(CultureInfo startingCulture)
-        {
-            var currentCulture = startingCulture;
-            var resourceNames = new HashSet<string>();
-
-            var hasAnyCultures = false;
-
-            while (true)
-            {
-                var cultureResourceNames = _stringProvider.GetAllResourceStrings(currentCulture, false);
-
-                if (cultureResourceNames != null)
-                {
-                    foreach (var resourceName in cultureResourceNames)
-                    {
-                        resourceNames.Add(resourceName);
-                    }
-                    hasAnyCultures = true;
-                }
-
-                if (currentCulture == currentCulture.Parent)
-                {
-                    // currentCulture begat currentCulture, probably time to leave
-                    break;
-                }
-
-                currentCulture = currentCulture.Parent;
-            }
-
-            if (!hasAnyCultures)
-            {
-                throw new Exception("No resources found for the culture.");
-            }
-
-            return resourceNames;
         }
     }
 }

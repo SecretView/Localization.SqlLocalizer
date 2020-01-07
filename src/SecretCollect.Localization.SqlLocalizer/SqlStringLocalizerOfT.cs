@@ -1,4 +1,4 @@
-﻿// Copyright (c) SecretCollect B.V. All rights reserved.
+// Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using Microsoft.Extensions.Localization;
@@ -14,7 +14,7 @@ namespace SecretCollect.Localization.SqlLocalizer
     /// <typeparam name="TResourceSource">The resource to lookup localizations for</typeparam>
     public class SqlStringLocalizer<TResourceSource> : IStringLocalizer<TResourceSource>
     {
-        private IStringLocalizer _localizer;
+        private readonly IStringLocalizer _localizer;
 
         /// <summary>
         /// Constructor
