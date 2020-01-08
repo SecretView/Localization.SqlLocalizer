@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageVersion>2.0.0-rc3</PackageVersion>
+    <PackageVersion>2.0.0-rc4</PackageVersion>
     <VersionPrefix>0.0.1</VersionPrefix>
     <VersionPrefix Condition="'$(packageversion)' != ''">$(PackageVersion)</VersionPrefix>
     <VersionSuffix></VersionSuffix>
@@ -19,7 +19,7 @@
     <Description>Package to enable localizations using EF &amp; SQL</Description>
     <PackageProjectUrl>https://github.com/SecretView/Localization.SqlLocalizer</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SecretView/Localization.SqlLocalizer</RepositoryUrl>
-    <PackageReleaseNotes>Bugfixed GetAllResourceStrings to return the keys, and implemented fallback culture parameter support &amp; Added a IStringLocalizerFactoryExtensions to facilitate calling Create with single key</PackageReleaseNotes>
+    <PackageReleaseNotes>Bugfixed GetAllResourceStrings to make unique cachekeys per baseName.</PackageReleaseNotes>
   </PropertyGroup>
 
 </Project>

@@ -22,6 +22,8 @@ namespace SecretCollect.Localization.SqlLocalizer
     {
         private const string ALL_RESOURCE_STRINGS = nameof(ALL_RESOURCE_STRINGS);
 
+        private readonly string _cacheKeyAll;
+
         private readonly IMemoryCache _memoryCache;
         private readonly string _baseName;
         private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -37,6 +39,7 @@ namespace SecretCollect.Localization.SqlLocalizer
         public SqlStringProvider(string baseName, IServiceScopeFactory serviceScopeFactory, IMemoryCache memoryCache, IOptions<GlobalizationOptions> globalizationOptions)
         {
             _baseName = baseName ?? throw new ArgumentNullException(nameof(baseName));
+            _cacheKeyAll = $"{ALL_RESOURCE_STRINGS}_{_baseName}";
             _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
             _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
             _globalizationOptions = globalizationOptions ?? throw new ArgumentNullException(nameof(globalizationOptions));
@@ -71,7 +74,7 @@ namespace SecretCollect.Localization.SqlLocalizer
         /// <inheritdoc />
         public IEnumerable<string> GetAllResourceKeys()
         {
-            var resourceStrings = _memoryCache.GetOrCreate(ALL_RESOURCE_STRINGS, entry =>
+            var resourceStrings = _memoryCache.GetOrCreate(_cacheKeyAll, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = _globalizationOptions.Value.CacheTime;
 
@@ -92,7 +95,7 @@ namespace SecretCollect.Localization.SqlLocalizer
             });
 
             if (resourceStrings == null)
-                _memoryCache.Remove(ALL_RESOURCE_STRINGS);
+                _memoryCache.Remove(_cacheKeyAll);
 
             return resourceStrings ?? Array.Empty<string>();
         }
