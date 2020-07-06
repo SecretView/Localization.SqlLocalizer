@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SecretCollect.Localization.SqlLocalizer.Data;
+using System;
 
 namespace SimpleMvc
 {
@@ -22,8 +23,6 @@ namespace SimpleMvc
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddGlobalization(optionsBuilder => optionsBuilder.UseInMemoryDatabase("InMemoryDatabase"));
-
             services.AddControllersWithViews()
                 .AddDataAnnotationsLocalization();
         }
@@ -41,12 +40,6 @@ namespace SimpleMvc
             {
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
-
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetService<LocalizationContext>();
-                DatabaseSeeder.InitializeDatabase(context);
-            }
         }
     }
 }

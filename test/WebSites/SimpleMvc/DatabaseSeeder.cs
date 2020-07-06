@@ -1,10 +1,12 @@
 // Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
+using Microsoft.EntityFrameworkCore.Internal;
 using SecretCollect.Localization.SqlLocalizer.Data;
 using SimpleMvc.Controllers;
 using SimpleMvc.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SimpleMvc
 {
@@ -12,6 +14,9 @@ namespace SimpleMvc
     {
         public static void InitializeDatabase(LocalizationContext context)
         {
+            if (context.SupportedCultures.Any())
+                return;
+
             var cultureEN = new SupportedCulture() { IsSupported = true, Name = "en" };
             var cultureNL = new SupportedCulture() { IsSupported = true, Name = "nl", FallbackCulture = cultureEN };
             context.SupportedCultures.Add(cultureEN);

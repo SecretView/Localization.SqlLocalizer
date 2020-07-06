@@ -2,8 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using SimpleMvc;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -17,6 +18,22 @@ namespace SecretCollect.Localization.SqlLocalizer.IntegrationTests
 
         public DataAnnotationsTests(WebApplicationFactory<Startup> fixture)
         {
+            fixture = fixture.WithWebHostBuilder(b => b.ConfigureServices(services =>
+            {
+                services.AddDbContext<Data.LocalizationContext>(optionsBuilder => optionsBuilder.UseInMemoryDatabase(nameof(DataAnnotationsTests)));
+            }));
+
+            using (var scope = fixture.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetService<Data.LocalizationContext>();
+                DatabaseSeeder.InitializeDatabase(context);
+            }
+
+            fixture = fixture.WithWebHostBuilder(b => b.ConfigureServices(services =>
+            {
+                services.AddGlobalization(optionsBuilder => optionsBuilder.UseInMemoryDatabase(nameof(DataAnnotationsTests)));
+            }));
+
             // Arrange
             _client = fixture.CreateDefaultClient();
             _client.DefaultRequestHeaders.Add("Accept-Language", "nl-NL,nl;q=0.9");
@@ -29,9 +46,6 @@ namespace SecretCollect.Localization.SqlLocalizer.IntegrationTests
             var response = await _client.GetAsync("/View/SelectListUsingEnum/");
 
             var responseString = await response.Content.ReadAsStringAsync();
-
-            Debug.WriteLine(responseString);
-
 
             var xElement = System.Xml.Linq.XElement.Parse(responseString);
 

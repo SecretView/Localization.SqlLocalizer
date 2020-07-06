@@ -2,6 +2,8 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using SimpleMvc;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -15,6 +17,22 @@ namespace SecretCollect.Localization.SqlLocalizer.IntegrationTests
 
         public SimpleControllerTests(WebApplicationFactory<Startup> fixture)
         {
+            fixture = fixture.WithWebHostBuilder(b => b.ConfigureServices(services =>
+            {
+                services.AddDbContext<Data.LocalizationContext>(optionsBuilder => optionsBuilder.UseInMemoryDatabase(nameof(SimpleControllerTests)));
+            }));
+
+            using (var scope = fixture.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetService<Data.LocalizationContext>();
+                DatabaseSeeder.InitializeDatabase(context);
+            }
+
+            fixture = fixture.WithWebHostBuilder(b => b.ConfigureServices(services =>
+            {
+                services.AddGlobalization(optionsBuilder => optionsBuilder.UseInMemoryDatabase(nameof(SimpleControllerTests)));
+            }));
+
             // Arrange
             _client = fixture.CreateDefaultClient();
             _client.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9");
