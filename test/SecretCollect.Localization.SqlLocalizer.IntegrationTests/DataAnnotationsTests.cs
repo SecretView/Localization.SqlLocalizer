@@ -1,8 +1,9 @@
-﻿// Copyright (c) SecretCollect B.V. All rights reserved.
+// Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
 using Microsoft.AspNetCore.Mvc.Testing;
 using SimpleMvc;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -28,6 +29,10 @@ namespace SecretCollect.Localization.SqlLocalizer.IntegrationTests
             var response = await _client.GetAsync("/View/SelectListUsingEnum/");
 
             var responseString = await response.Content.ReadAsStringAsync();
+
+            Debug.WriteLine(responseString);
+
+
             var xElement = System.Xml.Linq.XElement.Parse(responseString);
 
             // Assert

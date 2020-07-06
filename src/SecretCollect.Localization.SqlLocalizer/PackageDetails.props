@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageVersion>2.0.0-rc4</PackageVersion>
+    <PackageVersion>3.1.0-alpha01</PackageVersion>
     <VersionPrefix>0.0.1</VersionPrefix>
     <VersionPrefix Condition="'$(packageversion)' != ''">$(PackageVersion)</VersionPrefix>
     <VersionSuffix></VersionSuffix>
@@ -19,7 +19,7 @@
     <Description>Package to enable localizations using EF &amp; SQL</Description>
     <PackageProjectUrl>https://github.com/SecretView/Localization.SqlLocalizer</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SecretView/Localization.SqlLocalizer</RepositoryUrl>
-    <PackageReleaseNotes>Bugfixed GetAllResourceStrings to make unique cachekeys per baseName.</PackageReleaseNotes>
+    <PackageReleaseNotes>Upgraded to netcore3.1.</PackageReleaseNotes>
   </PropertyGroup>
 
 </Project>

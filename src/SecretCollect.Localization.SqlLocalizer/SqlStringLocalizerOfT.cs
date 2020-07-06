@@ -30,8 +30,14 @@ namespace SecretCollect.Localization.SqlLocalizer
             _localizer = factory.Create(typeof(TResourceSource));
         }
 
+
         /// <inheritdoc />
-        public virtual IStringLocalizer WithCulture(CultureInfo culture) => _localizer.WithCulture(culture);
+        public virtual IStringLocalizer WithCulture(CultureInfo culture)
+        {
+#pragma warning disable CS0618
+            return _localizer.WithCulture(culture);
+#pragma warning restore CS0618
+        }
 
         /// <inheritdoc />
         public virtual LocalizedString this[string name]
