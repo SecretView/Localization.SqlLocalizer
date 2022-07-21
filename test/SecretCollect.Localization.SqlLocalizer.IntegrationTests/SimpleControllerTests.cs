@@ -1,23 +1,25 @@
 // Copyright (c) SecretCollect B.V. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
 
-using Microsoft.AspNetCore.Mvc.Testing;
 using SimpleMvc;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace SecretCollect.Localization.SqlLocalizer.IntegrationTests
 {
-    public class SimpleControllerTests : IClassFixture<WebApplicationFactory<Startup>>
+    public class SimpleControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly HttpClient _client;
+        private readonly ITestOutputHelper _output;
 
-        public SimpleControllerTests(WebApplicationFactory<Startup> fixture)
+        public SimpleControllerTests(CustomWebApplicationFactory<Startup> fixture, Xunit.Abstractions.ITestOutputHelper output)
         {
             // Arrange
             _client = fixture.CreateDefaultClient();
             _client.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9");
+            _output = output;
         }
 
         [Fact]
@@ -25,6 +27,13 @@ namespace SecretCollect.Localization.SqlLocalizer.IntegrationTests
         {
             // Act
             var response = await _client.GetAsync("/Simple/HelloWorld");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var txt = await response.Content.ReadAsStringAsync();
+                _output.WriteLine(txt);
+            }
+
             response.EnsureSuccessStatusCode();
 
             var responseString = await response.Content.ReadAsStringAsync();

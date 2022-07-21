@@ -31,9 +31,6 @@ namespace SecretCollect.Localization.SqlLocalizer
         }
 
         /// <inheritdoc />
-        public virtual IStringLocalizer WithCulture(CultureInfo culture) => _localizer.WithCulture(culture);
-
-        /// <inheritdoc />
         public virtual LocalizedString this[string name]
         {
             get

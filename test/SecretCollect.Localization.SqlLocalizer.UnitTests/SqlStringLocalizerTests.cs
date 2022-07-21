@@ -76,26 +76,5 @@ namespace SecretCollect.Localization.SqlLocalizer.UnitTests
             stringProviderMock.Verify(moq => moq.GetString(lookupKey, CultureInfo.GetCultureInfo("nl"), true, true), Times.AtLeastOnce());
             stringProviderMock.Verify(moq => moq.GetString(lookupKey, CultureInfo.GetCultureInfo("en"), true, true), Times.Never());
         }
-
-        [Fact]
-        public void With_Culture_Returns_New_Localizer_With_Selected_Culture()
-        {
-            // Arrange
-            const string lookupKey = "INPUT_STRING";
-            const string nlAnswer = "Invoer tekst";
-            const string enAnswer = "Input text";
-            var stringProviderMock = new Mock<IStringProvider>();
-            stringProviderMock.Setup(p => p.GetString(lookupKey, CultureInfo.GetCultureInfo("nl"), It.IsAny<bool>(), It.IsAny<bool>())).Returns(nlAnswer);
-            stringProviderMock.Setup(p => p.GetString(lookupKey, CultureInfo.GetCultureInfo("en"), It.IsAny<bool>(), It.IsAny<bool>())).Returns(enAnswer);
-            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("nl");
-            var currentUiLocalizer = new SqlStringLocalizer(stringProviderMock.Object, "Test.Namespace.Foo.Bar", NullLogger.Instance);
-
-            // Act
-            var englishLocalizer = currentUiLocalizer.WithCulture(CultureInfo.GetCultureInfo("en"));
-            var localizedString = englishLocalizer[lookupKey];
-
-            // Assert
-            Assert.Equal(enAnswer, localizedString.Value);
-        }
     }
 }

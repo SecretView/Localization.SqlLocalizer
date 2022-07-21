@@ -1,13 +1,13 @@
-﻿@model SecretCollect.Localization.Web.Models.SearchVM
+@model SecretCollect.Localization.Web.Models.SearchVM
 @inject IViewLocalizer localizer
 
 @if (string.IsNullOrWhiteSpace(Model?.Query))
 {
-    ViewData["Title"] = localizer["Search"].Value;
+    ViewData["Title"] = localizer["SEARCH_TITLE"].Value;
 }
 else
 {
-    ViewData["Title"] = localizer["Search"].Value + ": " + Model.Query;
+    ViewData["Title"] = localizer["SEARCH_TITLE"].Value + ": " + Model.Query;
 }
 
 <h2>@ViewData["Title"]</h2>

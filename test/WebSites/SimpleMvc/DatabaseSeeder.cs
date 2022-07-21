@@ -1,24 +1,33 @@
-// Copyright (c) SecretCollect B.V. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for license information.
-
 using SecretCollect.Localization.SqlLocalizer.Data;
 using SimpleMvc.Controllers;
 using SimpleMvc.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SimpleMvc
 {
-    public static class DatabaseSeeder
+    public class DatabaseSeeder
     {
+        private static readonly object _lock = new object();
+
         public static void InitializeDatabase(LocalizationContext context)
         {
-            var cultureEN = new SupportedCulture() { IsSupported = true, Name = "en" };
-            var cultureNL = new SupportedCulture() { IsSupported = true, Name = "nl", FallbackCulture = cultureEN };
-            context.SupportedCultures.Add(cultureEN);
-            context.SupportedCultures.Add(cultureNL);
-            context.SaveChanges();
+            if (context.SupportedCultures.Any())
+                return;
 
-            var collection = new Dictionary<LocalizationKey, (SupportedCulture Culture, string Value)[]>()
+            lock (_lock)
+            {
+
+                if (context.SupportedCultures.Any())
+                    return;
+
+                var cultureEN = new SupportedCulture() { IsSupported = true, Name = "en" };
+                var cultureNL = new SupportedCulture() { IsSupported = true, Name = "nl", FallbackCulture = cultureEN };
+                context.SupportedCultures.Add(cultureEN);
+                context.SupportedCultures.Add(cultureNL);
+                context.SaveChanges();
+
+                var collection = new Dictionary<LocalizationKey, (SupportedCulture Culture, string Value)[]>()
                 {
                     { new LocalizationKey() { Base = typeof(Months).FullName, Key = "JANUARY" }, new [] { (cultureNL, "Januari"), (cultureEN, "January") } },
                     { new LocalizationKey() { Base = typeof(Months).FullName, Key = "FEBRUARY" }, new [] { (cultureNL, "Februari"), (cultureEN, "February") } },
@@ -37,19 +46,20 @@ namespace SimpleMvc
                     { new LocalizationKey() { Base = typeof(SimpleController).FullName, Key = "HELLO_THING" }, new [] { (cultureEN, "Hello something!") } },
                 };
 
-            foreach (var item in collection)
-            {
-                context.LocalizationKeys.Add(item.Key);
-                context.SaveChanges();
-                foreach (var (Culture, Value) in item.Value)
-                    context.LocalizationRecords.Add(new LocalizationRecord()
-                    {
-                        Culture = Culture,
-                        LocalizationKey = item.Key,
-                        Status = RecordStatus.HumanTranslated,
-                        Text = Value
-                    }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
-                context.SaveChanges();
+                foreach (var item in collection)
+                {
+                    context.LocalizationKeys.Add(item.Key);
+                    context.SaveChanges();
+                    foreach (var (culture, value) in item.Value)
+                        context.LocalizationRecords.Add(new LocalizationRecord()
+                        {
+                            Culture = culture,
+                            LocalizationKey = item.Key,
+                            Status = RecordStatus.HumanTranslated,
+                            Text = value
+                        });
+                    context.SaveChanges();
+                }
             }
         }
     }

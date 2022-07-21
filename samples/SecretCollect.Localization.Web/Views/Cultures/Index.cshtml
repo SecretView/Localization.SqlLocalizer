@@ -1,10 +1,10 @@
 @model IEnumerable<(Guid Id, string Name)>
 @inject IViewLocalizer localizer
 @{
-    ViewData["Title"] = localizer["BASE_CULTURES"];
+    ViewData["Title"] = localizer["CULTURES_TITLE"];
 }
 
-<h2>@localizer["BASE_CULTURES"]</h2>
+<h2>@localizer["CULTURES_TITLE"]</h2>
 
 <p>
     <a asp-action="Add">@localizer["ADD_NEW_CULTURE"]</a>

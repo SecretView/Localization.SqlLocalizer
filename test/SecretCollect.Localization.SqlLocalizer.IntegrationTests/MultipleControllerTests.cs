@@ -9,11 +9,11 @@ using Xunit;
 
 namespace SecretCollect.Localization.SqlLocalizer.IntegrationTests
 {
-    public class MultipleControllerTests : IClassFixture<WebApplicationFactory<Startup>>
+    public class MultipleControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly HttpClient _client;
 
-        public MultipleControllerTests(WebApplicationFactory<Startup> fixture)
+        public MultipleControllerTests(CustomWebApplicationFactory<Startup> fixture)
         {
             // Arrange
             _client = fixture.CreateDefaultClient();

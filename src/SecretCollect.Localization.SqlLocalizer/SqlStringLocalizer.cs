@@ -81,19 +81,6 @@ namespace SecretCollect.Localization.SqlLocalizer
         }
 
         /// <inheritdoc />
-        public IStringLocalizer WithCulture(CultureInfo culture)
-            => culture == null
-                ? new SqlStringLocalizer(
-                    _stringProvider,
-                    BaseName,
-                    _logger)
-                : new SqlStringWithCultureLocalizer(
-                    _stringProvider,
-                    BaseName,
-                    culture,
-                    _logger);
-
-        /// <inheritdoc />
         public virtual IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures) =>
             GetAllStrings(includeParentCultures, CultureInfo.CurrentUICulture);
 

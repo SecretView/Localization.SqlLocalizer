@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace SecretCollect.Localization.Web
 {
@@ -25,7 +26,7 @@ namespace SecretCollect.Localization.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -40,37 +41,36 @@ namespace SecretCollect.Localization.Web
 
             app.UseStaticFiles();
 
-            app.UseMvc(routes =>
+            app.UseRouting();
+
+            app.UseEndpoints(routes =>
             {
-                routes.MapRoute(
+                routes.MapControllerRoute(
                     name: "SearchRecords",
-                    template: "Keys/Search",
+                    pattern: "Keys/Search",
                     defaults: new { controller = "Keys", action = "Search" }
                 );
-                routes.MapRoute(
+                routes.MapControllerRoute(
                     name: "MissingKeys",
-                    template: "Keys/Missing",
+                    pattern: "Keys/Missing",
                     defaults: new { controller = "Keys", action = "Missing" }
                 );
-                routes.MapRoute(
+                routes.MapControllerRoute(
                     name: "addKey",
-                    template: "Keys/Add",
+                    pattern: "Keys/Add",
                     defaults: new { controller = "Keys", action = "Add" }
                 );
-                routes.MapRoute(
+                routes.MapControllerRoute(
                     name: "EditKey",
-                    template: "Keys/{baseKey}/{mainKey}",
+                    pattern: "Keys/{baseKey}/{mainKey}",
                     defaults: new { controller = "Keys", action = "Edit" }
                 );
-                routes.MapRoute(
+                routes.MapControllerRoute(
                     name: "SubKey",
-                    template: "Keys/{baseKey}",
+                    pattern: "Keys/{baseKey}",
                     defaults: new { controller = "Keys", action = "SubKey" }
                 );
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}"
-                );
+                routes.MapDefaultControllerRoute();
             });
         }
     }

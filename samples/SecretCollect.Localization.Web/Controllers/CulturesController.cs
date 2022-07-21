@@ -89,7 +89,7 @@ namespace SecretCollect.Localization.Web.Controllers
 
                 return RedirectToAction(nameof(Edit), new { id = culture.Id, saveResult = SaveResult.Success });
             }
-            catch (DbUpdateException ex) when (( ex.InnerException as System.Data.SqlClient.SqlException )?.Number == 2601)
+            catch (DbUpdateException ex) when (( ex.InnerException as Microsoft.Data.SqlClient.SqlException )?.Number == 2601)
             {
                 _context.ChangeTracker.Entries().ToList().ForEach(e => e.State = EntityState.Detached);
                 model.SaveResult = SaveResult.Duplicate;
@@ -203,7 +203,7 @@ namespace SecretCollect.Localization.Web.Controllers
 
                 return RedirectToAction(nameof(Edit), new { id = culture.Id, saveResult = SaveResult.Success });
             }
-            catch (DbUpdateException ex) when (( ex.InnerException as System.Data.SqlClient.SqlException )?.Number == 2601)
+            catch (DbUpdateException ex) when (( ex.InnerException as Microsoft.Data.SqlClient.SqlException )?.Number == 2601)
             {
                 _context.ChangeTracker.Entries().ToList().ForEach(e => e.State = EntityState.Detached);
                 model.SaveResult = SaveResult.Duplicate;

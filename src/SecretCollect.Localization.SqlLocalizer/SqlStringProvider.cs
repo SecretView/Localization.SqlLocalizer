@@ -152,7 +152,7 @@ namespace SecretCollect.Localization.SqlLocalizer
                     context.LocalizationKeys.Add(dbKey);
                     context.SaveChanges();
                 }
-                catch (DbUpdateException ex) when (( ex.InnerException as System.Data.SqlClient.SqlException )?.Number == 2601)
+                catch (DbUpdateException ex) when ((ex.InnerException as Microsoft.Data.SqlClient.SqlException)?.Number == 2601)
                 {
                     // Key already exists, (concurrent request probably added it): reload entity.
                     context.Entry(dbKey).State = EntityState.Detached;
