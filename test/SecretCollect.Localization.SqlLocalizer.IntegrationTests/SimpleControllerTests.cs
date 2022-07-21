@@ -12,14 +12,12 @@ namespace SecretCollect.Localization.SqlLocalizer.IntegrationTests
     public class SimpleControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly HttpClient _client;
-        private readonly ITestOutputHelper _output;
 
-        public SimpleControllerTests(CustomWebApplicationFactory<Startup> fixture, Xunit.Abstractions.ITestOutputHelper output)
+        public SimpleControllerTests(CustomWebApplicationFactory<Startup> fixture)
         {
             // Arrange
             _client = fixture.CreateDefaultClient();
             _client.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9");
-            _output = output;
         }
 
         [Fact]
@@ -27,12 +25,6 @@ namespace SecretCollect.Localization.SqlLocalizer.IntegrationTests
         {
             // Act
             var response = await _client.GetAsync("/Simple/HelloWorld");
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var txt = await response.Content.ReadAsStringAsync();
-                _output.WriteLine(txt);
-            }
 
             response.EnsureSuccessStatusCode();
 
